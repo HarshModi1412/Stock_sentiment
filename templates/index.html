@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Stock Market News & Tweets</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Indian Stock Market Sentiment Hub</h1>
+        <p>Latest News and Tweets with Sentiment Scores</p>
+        <form class="search-panel" method="get" action="/">
+            <input type="text" name="q" placeholder="Search by source name..." value="{{ query }}">
+            <select name="sort_by" onchange="this.form.submit()">
+                <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort by Date</option>
+                <option value="likes" {% if sort_by == 'likes' %}selected{% endif %}>Sort by Likes</option>
+            </select>
+        </form>
+    </header>
+
+    <main class="main-grid">
+        <aside class="stats-panel">
+            <h3>Sentiment Stats</h3>
+            <ul>
+                <li>📅 Avg Sentiment (Last 6 Days): <strong>{{ stats.avg_sentiment }}</strong></li>
+                <li>📈 Sentiment 6 Days Ago: <strong>{{ stats.six_day_sentiment }}</strong></li>
+                <li>🔢 Total Entries: <strong>{{ stats.total_entries }}</strong></li>
+                <li>🗓️ Date Range: <strong>{{ stats.date_range }}</strong></li>
+            </ul>
+        </aside>
+
+        <section class="content" id="contentSection">
+            {% for item in news_items %}
+            <div class="card" data-source="{{ item.source }}">
+                <h2><a href="{{ item.Url }}" target="_blank" style="color: #ffc107; text-decoration: none;">{{ item.source }}</a></h2>
+                <p class="meta">Date: {{ item.date }} | Source: {{ item.source }}</p>
+                <p class="summary">{{ item.summary }}</p>
+                <span class="sentiment {% if item.sentiment|float >= 0.2 %}positive{% elif item.sentiment|float <= -0.2 %}negative{% else %}neutral{% endif %}">
+                    Sentiment: {{ '%.2f'|format(item.sentiment|float) }}
+                </span>
+                {% if item.likes %}
+                <p class="meta">Likes: {{ item.likes }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Indian Market Insights | Built with ❤️ by Harsh Modi</p>
+    </footer>
+</body>
+</html>
