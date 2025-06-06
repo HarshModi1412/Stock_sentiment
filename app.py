@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import pandas as pd
 import re
 from datetime import datetime, timedelta
+import os
 
 app = Flask(__name__)
 
@@ -90,5 +91,7 @@ def index():
         no_results=len(news_items) == 0
     )
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))  # Render provides PORT env var
+    app.run(host='0.0.0.0', port=port)
